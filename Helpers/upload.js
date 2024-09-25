@@ -84,7 +84,7 @@ const getFilePath = (folderName, mediaName, mediaType) => {
 };
 
 // Upload session handler
-const startUploadSession = async (accessToken, folderName, mediaName, mediaType, caption = '',hashtags, coverUrl = '', thumbOffset = '', locationId = '') => {
+const startUploadSession = async (accessToken, folderName, mediaName, mediaType, caption = '',hashtags, coverUrl = '', thumbOffset = '', locationId = '',ngrokServer) => {
   try {
     const filePath = getFilePath(folderName, mediaName, mediaType);
     const extension = mediaType === 'VIDEO' ? '.mp4' : '.png';
@@ -96,9 +96,9 @@ const startUploadSession = async (accessToken, folderName, mediaName, mediaType,
     //   throw new Error(`Failed to upload media to IPFS: ${ipfsResponse.pinataURL}`);
     // }
 
-    const mediaUrl = `https://3455-2409-40e3-387-d187-e6da-2ca0-2001-8f66.ngrok-free.app/${folderName}/${mediaName}${extension}`;
+    const mediaUrl = `${ngrokServer}/${folderName}/${mediaName}${extension}`;
 
-    console.log(mediaUrl);
+    console.log("mediaUrl",mediaUrl);
     
     // Step 2: Fetch Instagram user details to get igId
     const { igId } = await fetchInstagramUserDetails(accessToken);
