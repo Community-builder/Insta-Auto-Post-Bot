@@ -24,7 +24,7 @@ const fetchInstagramUserDetails = async (accessToken) => {
     return { igId, igUsername };
   } catch (error) {
     console.error('Error fetching Instagram user details:', error.response ? error.response.data : error.message);
-    throw error;
+    throw error?.response;
   }
 };
 
@@ -52,7 +52,7 @@ const postInstagramMedia = async (igId, accessToken, mediaUrl, mediaType, captio
     return response.data.id;
   } catch (error) {
     console.error(`Error creating ${mediaType}:`, error.response ? error.response.data : error.message);
-    throw error;
+    throw error?.response
   }
 };
 
@@ -87,16 +87,16 @@ const getFilePath = (folderName, mediaName, mediaType) => {
 const startUploadSession = async (accessToken, folderName, mediaName, mediaType, caption = '',hashtags, coverUrl = '', thumbOffset = '', locationId = '') => {
   try {
     const filePath = getFilePath(folderName, mediaName, mediaType);
+    const extension = mediaType === 'VIDEO' ? '.mp4' : '.png';
+    // // Step 1: Upload media to IPFS
+    // const fileStream = fs.createReadStream(filePath);
+    // const ipfsResponse = await uploadFileToIPFS(fileStream);
 
-    // Step 1: Upload media to IPFS
-    const fileStream = fs.createReadStream(filePath);
-    const ipfsResponse = await uploadFileToIPFS(fileStream);
+    // if (!ipfsResponse.success) {
+    //   throw new Error(`Failed to upload media to IPFS: ${ipfsResponse.pinataURL}`);
+    // }
 
-    if (!ipfsResponse.success) {
-      throw new Error(`Failed to upload media to IPFS: ${ipfsResponse.pinataURL}`);
-    }
-
-    const mediaUrl = ipfsResponse.pinataURL;
+    const mediaUrl = `https://3455-2409-40e3-387-d187-e6da-2ca0-2001-8f66.ngrok-free.app/${folderName}/${mediaName}${extension}`;
 
     console.log(mediaUrl);
     
@@ -113,8 +113,8 @@ const startUploadSession = async (accessToken, folderName, mediaName, mediaType,
       console.error('Failed to obtain creationId, cannot publish media.');
     }
   } catch (error) {
-    console.error('Error in Instagram media workflow:', error);
-    throw error;
+    // console.error('Error in Instagram media workflow:', error.response);
+    throw error.response;
   }
 };
 
@@ -134,7 +134,7 @@ async function checkMediaStatus(creationId, accessToken) {
       }
 
     } catch (error) {
-      console.error('Error checking media status:', error);
+      // console.error('Error checking media status:', error?.response);
       // Optionally wait before retrying in case of error
       await wait(10000);
     }
