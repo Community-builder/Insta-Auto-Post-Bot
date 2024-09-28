@@ -24,7 +24,7 @@ async function runUploadProcess(mediaType, retryCount = 0) {
     await cropVideo(config.inputVideo, config.outputDir, config.beepAudio, config.mediaName, config.videoDuration, config.videoQuantity, config.episode);
 
     // Upload process
-    await startUploadSession(config.accessToken, config.folderName, config.mediaName, mediaType, config.caption, config.hashtags, coverUrl = '', thumbOffset = "", config.location, config.ngrokServer);
+    await startUploadSession(config.accessToken, config.folderName, config.mediaName, mediaType, config.caption, config.hashtags, coverUrl = '', thumbOffset = "", config.location);
     console.log('Upload completed successfully');
 
     // Increment media name for the next upload

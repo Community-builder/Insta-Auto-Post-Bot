@@ -1,7 +1,7 @@
 require('dotenv').config();  // Load environment variables
 
 
-const videoName= "bheem"
+const videoName= process.env.VIDEO_NAME
 const hashtags= "#NFT #cryptoart #digitalart #kapilsharma #kapilsharma #kapilsharmashow #salmankhan #bollywood #thekapilsharmashow #comedy #deepikapadukone #akshaykumar #metakul #samayRaina #samay #viralreels #funnymemes "
 
 const config = {
@@ -11,8 +11,7 @@ const config = {
   videoQuantity: 1,
   videoTocut:videoName,
   folderName: `${videoName}`,
-  accessToken: process.env.chota_bheem_btc,
-  ngrokServer: process.env.NGROK_SERVER,
+  accessToken: process.env.INSTAGRAM_ACCESS_TOKEN,
   THIRDWEB_SECRET_KEY: process.env.THIRDWEB_SECRET_KEY,
   location: "New York",
   hashtags: hashtags, 

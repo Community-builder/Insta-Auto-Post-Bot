@@ -90,7 +90,7 @@ const getFileUrl = (mediaName,folderName, mediaType, serverUrl) => {
 };
 
 // Upload session handler
-const startUploadSession = async (accessToken, folderName, mediaName, mediaType, caption = '',hashtags, coverUrl = '', thumbOffset = '', locationId = '',ngrokServer) => {
+const startUploadSession = async (accessToken, folderName, mediaName, mediaType, caption = '',hashtags, coverUrl = '', thumbOffset = '', locationId = '') => {
   try {
 
     const filePath = getFilePath(folderName, mediaName, mediaType);
