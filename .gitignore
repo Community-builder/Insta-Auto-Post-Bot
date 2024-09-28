@@ -39,8 +39,6 @@ gasReporterOutput.json
 dist/
 out/
 build/
-postAssets/
-input-video.mp4
 # Ignore IDE specific files (JetBrains, VSCode, etc.)
 .idea/
 *.iml
