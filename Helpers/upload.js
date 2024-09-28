@@ -96,7 +96,7 @@ const startUploadSession = async (accessToken, folderName, mediaName, mediaType,
     //   throw new Error(`Failed to upload media to IPFS: ${ipfsResponse.pinataURL}`);
     // }
 
-    const mediaUrl = `${ngrokServer}/${folderName}/${mediaName}${extension}`;
+    const mediaUrl = `http://127.0.0.1:4040 /${folderName}/${mediaName}${extension}`;
 
     console.log("mediaUrl",mediaUrl);
     

@@ -1,53 +1,69 @@
+// main.js
 const express = require('express');
-const path = require('path');
 const cron = require('node-cron');
-const { startUploadSession } = require('./Helpers/upload'); // Import the cron job file
+const { cropVideo } = require('./Helpers/VideoProcessing'); // Import the cropVideo function
+const { startUploadSession } = require('./Helpers/upload');
+const fs = require('fs');
+require('dotenv').config(); // Load environment variables
+
+// Your existing configuration and code...
+const config = require('./config');
 
 const app = express();
-const port = 3000;
+const PORT = process.env.PORT || 3000;
 
-// Define the path to the postAssets folder
-const postAssetsFolderPath = path.join(__dirname, '../postAssets');
+// Ensure the output directory exists
+if (!fs.existsSync(config.outputDir)) {
+  fs.mkdirSync(config.outputDir, { recursive: true });
+}
 
-// Serve static files from postAssets folder
-app.use('/postAssets', express.static(postAssetsFolderPath));
+// Function to handle the upload process with metadata
+async function runUploadProcess(mediaType, retryCount = 0) {
+  console.log(`Starting upload process for ${mediaType} with VideoNumber:`, config.mediaName);
 
-// Define parameters
-let photoName = 1; // Initialize photoName
-let folderName = 'nft'; // Initialize folderName
-const accessToken = '';  // Instagram access token
-
-// Function to handle the upload process
-async function runUploadProcess() {
-  console.log('Starting upload process with photoName:', photoName);
   try {
-    await startUploadSession(accessToken, folderName, photoName);  // Pass the parameters
+    // Crop the video first before uploading
+    await cropVideo(config.inputVideo, config.outputDir, config.beepAudio, config.mediaName, config.videoDuration, config.videoQuantity, config.episode);
+
+    // Upload process...
+    await startUploadSession(config.accessToken, config.folderName, config.mediaName, mediaType, config.caption, config.hashtags, '', '', config.location, config.ngrokServer);
     console.log('Upload completed successfully');
     
-    // Increment photoName for the next upload
-    photoName++;
+    // Increment media name for the next upload
+    config.mediaName++;
   } catch (error) {
-    console.error('Error during upload process:', error);
+    console.error(`Error during ${mediaType} upload process:`, error);
+
+    // Retry logic...
+    if (retryCount < 3) {
+      console.log(`Retrying upload for ${mediaType}... Attempt ${retryCount + 1}`);
+      await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait for 5 seconds before retrying
+      await runUploadProcess(mediaType, retryCount + 1); // Retry with incremented retry count
+    } else {
+      console.error(`Max retries reached for ${mediaType}. Waiting for the next cron job.`);
+    }
   }
 }
 
-// Function to execute the upload process immediately
-function runInitialUpload() {
-  console.log('Running initial upload process...');
-  runUploadProcess();
-}
+// Schedule cron jobs to handle both reels and photos every 4 hours
+cron.schedule('0 */4 * * *', () => runUploadProcess('VIDEO'));
 
-// Schedule cron job to run every 12 hours
-cron.schedule('0 */12 * * *', runUploadProcess); // Every 12 hours
+// Run the upload process immediately when the script starts
+runUploadProcess('VIDEO'); // Initial upload for reels
 
-// Schedule cron jobs for specific times
-cron.schedule('45 11 * * *', runUploadProcess); // 11:45 AM
-cron.schedule('30 18 * * *', runUploadProcess); // 6:30 PM
-
-// Run the upload process immediately when the server starts
-runInitialUpload();
+// Express route to manually trigger upload process
+app.get('/upload', async (req, res) => {
+  try {
+    await runUploadProcess('VIDEO');
+    res.status(200).send('Upload process started.');
+  } catch (error) {
+    console.error('Error triggering upload process:', error);
+    res.status(500).send('Error triggering upload process.');
+  }
+});
 
 // Start the Express server
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log('Cron jobs scheduled. Waiting for the next run...');
 });
