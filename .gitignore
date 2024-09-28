@@ -34,9 +34,6 @@ deployments/
 # Ignore Hardhat gas reports
 gasReporterOutput.json
 
-# Ignore compiled contracts
-*.json
-*.sol.js
 
 # Ignore build outputs
 dist/
