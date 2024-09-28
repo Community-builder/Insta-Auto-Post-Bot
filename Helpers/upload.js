@@ -89,6 +89,8 @@ const startUploadSession = async (accessToken, folderName, mediaName, mediaType,
 
     const filePath = getFilePath(folderName, mediaName, mediaType);
     const extension = mediaType === 'VIDEO' ? '.mp4' : '.png';
+    console.log(filePath);
+    
     // Step 1: Upload media to IPFS
     const fileStream = fs.createReadStream(filePath);
     const ipfsResponse = await uploadFileToIPFS(fileStream);
@@ -104,7 +106,7 @@ const startUploadSession = async (accessToken, folderName, mediaName, mediaType,
 
     const cidUrl = `https://ipfs.io/${cid}`;
    
-    const mediaUrl = cidUrl
+    const mediaUrl = filePath
 
     console.log("mediaUrl",mediaUrl);
     
