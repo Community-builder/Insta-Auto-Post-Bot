@@ -5,8 +5,8 @@ const videoName= process.env.VIDEO_NAME
 const hashtags= "#NFT #cryptoart #digitalart #kapilsharma #kapilsharma #kapilsharmashow #salmankhan #bollywood #thekapilsharmashow #comedy #deepikapadukone #akshaykumar #metakul #samayRaina #samay #viralreels #funnymemes "
 
 const config = {
-  episode: 1,
-  mediaName: 13,
+  episode:  process.env.VIDEO_EPISODE_NUMBER,
+  mediaName: process.env.EPISODE_PART_NUMBER,
   videoDuration: 30,
   videoQuantity: 1,
   videoTocut:videoName,
