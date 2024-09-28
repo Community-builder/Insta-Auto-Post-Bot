@@ -1,86 +1,93 @@
 const ffmpeg = require('fluent-ffmpeg');
 const fs = require('fs');
 
-// ! total post 156 with current inputVideo
-// Set path for ffprobe (change the path if needed)
+// Set path for ffprobe (change if needed)
 ffmpeg.setFfprobePath('/usr/bin/ffprobe');
 
-const inputVideo = 'input-video.mp4'; // Input video file
-const outputDir = './postAssets/nft'; // Directory to store the output videos
-const startVideoNumber = 10; // Start numbering from this video number
-let videoNo = 1;
-const videoDuration =30; // Duration of each video segment in seconds
-const videoQuantity = 5; // Number of video segments to crop
+const videoTocut="doraemon"
+
+
+const inputVideo = `postAssets/input/${videoTocut}.mp4`; // Input video file
+const outputDir = `./postAssets/${videoTocut}`; // Directory to store the output videos
+
+
+
+const beepAudio = 'postAssets/input/beep.mp3'; // Beep audio file to add
+const startVideoNumber = 9; // Start numbering from this video number
+const videoDuration = 30; // Duration of each video segment in seconds
+const videoQuantity = 4; // Number of video segments to crop
 const targetWidth = 1080; // Desired width for Instagram Reel (9:16 aspect ratio)
 const targetHeight = 1920; // Desired height for Instagram Reel
-
-let partNumber = 1;
+let episode = 1;
 
 // Create the output directory if it doesn't exist
 if (!fs.existsSync(outputDir)) {
-  fs.mkdirSync(outputDir);
+  fs.mkdirSync(outputDir, { recursive: true });
 }
 
-// Function to crop video into segments based on user input
+// Function to crop video into segments
 function cropVideo() {
-  // Calculate start time based on startVideoNumber
   const startTime = startVideoNumber * videoDuration;
 
   // Get the total duration of the input video
   ffmpeg.ffprobe(inputVideo, (err, metadata) => {
     if (err) {
-      console.error('Error getting video duration:', err);
+      console.error('Error getting video metadata:', err);
       return;
     }
 
     const durationInSeconds = metadata.format.duration;
-
-    // Ensure the startTime + total crop time does not exceed the video length
     const totalCropTime = videoQuantity * videoDuration;
+
+    // Ensure the crop does not exceed video length
     if (startTime + totalCropTime > durationInSeconds) {
       console.error('Total crop time exceeds video duration.');
       return;
     }
 
-    // Calculate crop duration for each video segment
-    const cropDurationPerSegment = videoDuration;
-
-    // Loop through the video quantity to create each segment
+    // Loop through each video segment
     for (let i = 0; i < videoQuantity; i++) {
-      const segmentStartTime = startTime + i * cropDurationPerSegment;
-      const segmentEndTime = Math.min(segmentStartTime + cropDurationPerSegment, durationInSeconds);
-
-      const outputFilename = `${outputDir}/${startVideoNumber + i}.mp4`;
-
-      // Text for overlay
-      const text = `Video no ${videoNo}, part no ${startVideoNumber+i}`;
-
-      ffmpeg(inputVideo)
-        .inputOptions(['-ss', segmentStartTime, '-to', segmentEndTime])
-        .videoCodec('libx264') // H264 video codec
-        .audioCodec('aac') // AAC audio codec
-        .audioChannels(2) // Stereo sound
-        .audioFrequency(48000) // 48 kHz sample rate
-        .outputOptions([
-          '-movflags', 'faststart', // Ensure moov atom is at the front for fast streaming
-          '-pix_fmt', 'yuv420p', // 4:2:0 chroma subsampling
-          '-r', '30', // Frame rate (30 FPS for Instagram Reels)
-          `-vf`, `scale=${targetWidth}:${targetHeight},drawtext=text='${text}':fontcolor=white:fontsize=80:box=1:boxcolor=black@0.5:x=(w-text_w)/2:y=50`, // Adjust font size for better visibility and position it
-          '-b:v', '3500k', // Video bitrate (3.5 Mbps for compression and quality)
-          '-maxrate', '4000k', // Max video bitrate
-          '-bufsize', '8000k', // Buffer size for rate control
-          '-b:a', '128k' // Audio bitrate 128 kbps
-        ])
-        .on('end', () => {
-          console.log(`Segment ${startVideoNumber + i} created: ${outputFilename}`);
-        })
-        .on('error', (err) => {
-          console.error(`Error creating segment ${startVideoNumber + i}:`, err);
-        })
-        .save(outputFilename);
+      createSegment(i, startTime, durationInSeconds);
     }
   });
 }
 
-// Start the cropping process
+// Function to create a video segment
+function createSegment(i, startTime, durationInSeconds) {
+  const segmentStartTime = startTime + i * videoDuration;
+  const segmentEndTime = Math.min(segmentStartTime + videoDuration, durationInSeconds);
+  const outputFilename = `${outputDir}/${startVideoNumber + i}.mp4`;
+
+  const text = ` Ep ${episode} Part ${startVideoNumber + i}`;
+
+  ffmpeg(inputVideo)
+    .inputOptions(['-ss', segmentStartTime, '-to', segmentEndTime])
+    .input(beepAudio) // Add the beep audio input
+    .videoCodec('libx265') // H.265 codec for better compression
+    .audioCodec('aac')
+    .audioChannels(2)
+    .audioFrequency(48000)
+    .outputOptions([
+      '-movflags', 'faststart',
+      '-pix_fmt', 'yuv420p',
+      '-r', '30',
+      `-vf`, `drawtext=text='${text}':fontcolor=white:fontsize=80:box=1:boxcolor=black@0.5:x=(w-text_w)/2:y=50`,
+      '-b:v', '1500k', // Lower video bitrate for smaller size
+      '-maxrate', '1500k', // Lower maxrate to match bitrate
+      '-bufsize', '3000k', // Adjust buffer size accordingly
+      '-b:a', '64k', // Lower audio bitrate
+    ])
+    .complexFilter([ // Filter to mix video and audio
+      '[0:a][1:a]amix=inputs=2:duration=shortest'
+    ])
+    .on('end', () => {
+      console.log(`Segment ${startVideoNumber + i} created: ${outputFilename}`);
+    })
+    .on('error', (err) => {
+      console.error(`Error creating segment ${startVideoNumber + i}:`, err);
+    })
+    .save(outputFilename);
+}
+
+// Start cropping
 cropVideo();

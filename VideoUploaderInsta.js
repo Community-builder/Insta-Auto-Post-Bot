@@ -1,16 +1,12 @@
-// main.js
-const express = require('express');
+// main.js (or whatever your main file is)
 const cron = require('node-cron');
-const { cropVideo } = require('./Helpers/VideoProcessing'); // Import the cropVideo function
+const { cropVideo } = require('./Helpers/VideoProcessing');  // Import the cropVideo function
 const { startUploadSession } = require('./Helpers/upload');
 const fs = require('fs');
-require('dotenv').config(); // Load environment variables
+require('dotenv').config();  // Load environment variables
 
 // Your existing configuration and code...
 const config = require('./config');
-
-const app = express();
-const PORT = process.env.PORT || 3000;
 
 // Ensure the output directory exists
 if (!fs.existsSync(config.outputDir)) {
@@ -26,7 +22,7 @@ async function runUploadProcess(mediaType, retryCount = 0) {
     await cropVideo(config.inputVideo, config.outputDir, config.beepAudio, config.mediaName, config.videoDuration, config.videoQuantity, config.episode);
 
     // Upload process...
-    await startUploadSession(config.accessToken, config.folderName, config.mediaName, mediaType, config.caption, config.hashtags, '', '', config.location, config.ngrokServer);
+    await startUploadSession(config.accessToken, config.folderName, config.mediaName, mediaType, config.caption, config.hashtags, coverUrl = '', thumbOffset = "", config.location, config.ngrokServer);
     console.log('Upload completed successfully');
     
     // Increment media name for the next upload
@@ -37,8 +33,8 @@ async function runUploadProcess(mediaType, retryCount = 0) {
     // Retry logic...
     if (retryCount < 3) {
       console.log(`Retrying upload for ${mediaType}... Attempt ${retryCount + 1}`);
-      await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait for 5 seconds before retrying
-      await runUploadProcess(mediaType, retryCount + 1); // Retry with incremented retry count
+      await new Promise((resolve) => setTimeout(resolve, 5000));  // Wait for 5 seconds before retrying
+      await runUploadProcess(mediaType, retryCount + 1);  // Retry with incremented retry count
     } else {
       console.error(`Max retries reached for ${mediaType}. Waiting for the next cron job.`);
     }
@@ -49,21 +45,7 @@ async function runUploadProcess(mediaType, retryCount = 0) {
 cron.schedule('0 */4 * * *', () => runUploadProcess('VIDEO'));
 
 // Run the upload process immediately when the script starts
-runUploadProcess('VIDEO'); // Initial upload for reels
+runUploadProcess('VIDEO');  // Initial upload for reels
 
-// Express route to manually trigger upload process
-app.get('/upload', async (req, res) => {
-  try {
-    await runUploadProcess('VIDEO');
-    res.status(200).send('Upload process started.');
-  } catch (error) {
-    console.error('Error triggering upload process:', error);
-    res.status(500).send('Error triggering upload process.');
-  }
-});
-
-// Start the Express server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-  console.log('Cron jobs scheduled. Waiting for the next run...');
-});
+// Keep the script running to listen for cron jobs
+console.log('Cron jobs scheduled. Waiting for the next run...');
