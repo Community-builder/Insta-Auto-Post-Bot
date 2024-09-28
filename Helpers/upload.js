@@ -86,17 +86,27 @@ const getFilePath = (folderName, mediaName, mediaType) => {
 // Upload session handler
 const startUploadSession = async (accessToken, folderName, mediaName, mediaType, caption = '',hashtags, coverUrl = '', thumbOffset = '', locationId = '',ngrokServer) => {
   try {
+
     const filePath = getFilePath(folderName, mediaName, mediaType);
     const extension = mediaType === 'VIDEO' ? '.mp4' : '.png';
-    // // Step 1: Upload media to IPFS
-    // const fileStream = fs.createReadStream(filePath);
-    // const ipfsResponse = await uploadFileToIPFS(fileStream);
+    console.log(filePath);
+    
+    // Step 1: Upload media to IPFS
+    const fileStream = fs.createReadStream(filePath);
+    const ipfsResponse = await uploadFileToIPFS(fileStream);
 
-    // if (!ipfsResponse.success) {
-    //   throw new Error(`Failed to upload media to IPFS: ${ipfsResponse.pinataURL}`);
-    // }
 
-    const mediaUrl = `${filePath}/${folderName}/${mediaName}${extension}`;
+    console.log(ipfsResponse);
+
+    if (!ipfsResponse.success) {
+      throw new Error(`Failed to upload media to IPFS: ${ipfsResponse.pinataURL}`);
+    }
+    
+    const cid=ipfsResponse.pinataURL
+
+    const cidUrl = `https://ipfs.io/${cid}`;
+   
+    const mediaUrl = filePath
 
     console.log("mediaUrl",mediaUrl);
     
@@ -113,7 +123,7 @@ const startUploadSession = async (accessToken, folderName, mediaName, mediaType,
       console.error('Failed to obtain creationId, cannot publish media.');
     }
   } catch (error) {
-    // console.error('Error in Instagram media workflow:', error.response);
+    console.error('Error in Instagram media workflow:', error.response);
     throw error.response;
   }
 };

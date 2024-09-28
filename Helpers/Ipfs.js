@@ -2,8 +2,8 @@ const axios = require('axios');
 const FormData = require('form-data');
 
 // Pinata API keys
-const key = "d99730e010f73478ad6a";
-const secret = "5945b45be19c1c151c2f5b9791c214551c7a513f22b5bb3402d75f087a33cb46";
+const key = "e99ca1aeb6c2d3a8e4aa";
+const secret = "26fd52158544126dea105fd91e9ea87a624e636b6979e3bf4f634905304ff064";
 
 const uploadFileToIPFS = async (file) => {
     console.log("uploading to ipfs");
@@ -53,6 +53,8 @@ const uploadFileToIPFS = async (file) => {
             pinataURL: "https://gateway.pinata.cloud/ipfs/" + response.data.IpfsHash
         };
     } catch (error) {
+        console.log(error.response.data);
+        
         return {
             success: false,
             pinataURL: error.message,

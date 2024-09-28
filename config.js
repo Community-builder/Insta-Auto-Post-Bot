@@ -1,7 +1,7 @@
 require('dotenv').config();  // Load environment variables
 
 
-const videoName= "doraemon"
+const videoName= "bheem"
 const hashtags= "#NFT #cryptoart #digitalart #kapilsharma #kapilsharma #kapilsharmashow #salmankhan #bollywood #thekapilsharmashow #comedy #deepikapadukone #akshaykumar #metakul #samayRaina #samay #viralreels #funnymemes "
 
 const config = {
@@ -11,12 +11,12 @@ const config = {
   videoQuantity: 1,
   videoTocut:videoName,
   folderName: `postAssets/${videoName}`,
-  accessToken: process.env.web3_sol,
+  accessToken: process.env.chota_bheem_btc,
   ngrokServer: process.env.NGROK_SERVER,
   location: "New York",
   hashtags: hashtags, 
   caption: `Exciting NFT drop! Check out discord link in bio. ${hashtags}`,
-  inputVideo: `postAssets/${videoName}/${videoName}.mp4`,
+  inputVideo: `postAssets/input/${videoName}.mp4`,
   outputDir: `./postAssets/${videoName}`,
   beepAudio: 'postAssets/input/beep.mp3', // for bg 
 };
