@@ -15,7 +15,7 @@ const config = {
   THIRDWEB_SECRET_KEY: process.env.THIRDWEB_SECRET_KEY,
   location: "New York",
   hashtags: hashtags, 
-  caption: `Exciting NFT drop! Check out discord link in bio. ${hashtags}`,
+  caption: `Comment your favourite cartoon. Exciting NFT drop! Check out discord link in bio. ${hashtags}`,
   inputVideo: `postAssets/input/${videoName}.mp4`,
   outputDir: `./postAssets/${videoName}`,
   beepAudio: 'postAssets/input/beep.mp3', // for bg 
