@@ -12,6 +12,7 @@
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@helia/unixfs": "^3.0.7",
+    "@thirdweb-dev/storage": "^2.0.15",
     "axios": "^1.7.7",
     "canvas": "^2.11.2",
     "dotenv": "^16.4.5",
@@ -22,6 +23,7 @@
     "form-data": "^4.0.0",
     "helia": "^4.2.6",
     "localtunnel": "^2.0.2",
+    "mime-types": "^2.1.35",
     "node-cron": "^3.0.3",
     "simple-git": "^3.27.0",
     "util": "^0.12.5",

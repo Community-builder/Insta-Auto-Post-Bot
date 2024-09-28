@@ -13,6 +13,7 @@ const config = {
   folderName: `${videoName}`,
   accessToken: process.env.chota_bheem_btc,
   ngrokServer: process.env.NGROK_SERVER,
+  THIRDWEB_SECRET_KEY: process.env.THIRDWEB_SECRET_KEY,
   location: "New York",
   hashtags: hashtags, 
   caption: `Exciting NFT drop! Check out discord link in bio. ${hashtags}`,

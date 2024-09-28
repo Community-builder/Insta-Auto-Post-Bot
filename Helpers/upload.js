@@ -1,7 +1,9 @@
 const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
+const mime = require('mime-types');
 const { uploadFileToIPFS } = require('./Ipfs');
+const { addFileToIPFS } = require('./Thirdweb');
 
 // Function to fetch Instagram user details
 const fetchInstagramUserDetails = async (accessToken) => {
@@ -80,7 +82,7 @@ const publishInstagramMedia = async (igId, creationId, accessToken) => {
 // Function to get file path for both reels (videos) and photos (images)
 const getFilePath = (folderName, mediaName, mediaType) => {
   const extension = mediaType === 'VIDEO' ? '.mp4' : '.png';
-  return path.join(__dirname, `../${folderName}/${mediaName}${extension}`);
+  return path.join(__dirname, `../postAssets/${folderName}/${mediaName}${extension}`);
 };
 const getFileUrl = (mediaName,folderName, mediaType, serverUrl) => {
   const extension = mediaType === 'VIDEO' ? '.mp4' : '.png'; // Set the appropriate extension
@@ -91,12 +93,23 @@ const getFileUrl = (mediaName,folderName, mediaType, serverUrl) => {
 const startUploadSession = async (accessToken, folderName, mediaName, mediaType, caption = '',hashtags, coverUrl = '', thumbOffset = '', locationId = '',ngrokServer) => {
   try {
 
-    // const filePath = getFilePath(folderName, mediaName, mediaType);
+    const filePath = getFilePath(folderName, mediaName, mediaType);
     // const extension = mediaType === 'VIDEO' ? '.mp4' : '.png';
-    // console.log(filePath);
+    console.log(filePath);
     
+        // Read the file as a buffer
+        // const fileStream = fs.createReadStream(filePath);
+      //  console.log(fileStream);
+
+
+        const thirdwebFileUrl=await addFileToIPFS(filePath)
+
+
+
     // Step 1: Upload media to IPFS
     // const fileStream = fs.createReadStream(filePath);
+    // console.log(fileStream);
+    
     // const ipfsResponse = await uploadFileToIPFS(fileStream);
 
 
@@ -108,11 +121,12 @@ const startUploadSession = async (accessToken, folderName, mediaName, mediaType,
     
     // const cid=ipfsResponse.pinataURL
 
-    // const cidUrl = `https://ipfs.io/${cid}`;
+    // const cidUrl = `https://ipfs.io/${heliaCID}`;
    
     // const mediaUrl = filePath
-    const serverUrl=process.env.CURRENT_SERVER_URL
-    const mediaUrl = getFileUrl(mediaName,folderName, mediaType, serverUrl);
+    // const serverUrl=process.env.CURRENT_SERVER_URL
+    // const mediaUrl = getFileUrl(mediaName,folderName, mediaType, serverUrl);
+    const mediaUrl = thirdwebFileUrl;
 
 
     console.log("mediaUrl",mediaUrl);

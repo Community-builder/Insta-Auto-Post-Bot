@@ -7,7 +7,7 @@ require('dotenv').config();  // Load environment variables
 const { cropVideo } = require('./Helpers/VideoProcessing');  // Import the cropVideo function
 const { startUploadSession } = require('./Helpers/upload');
 const config = require('./config');
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 4001;
 const path = require('path');
 
 // Ensure the output directory exists

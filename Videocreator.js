@@ -4,7 +4,7 @@ const fs = require('fs');
 // Set path for ffprobe (change if needed)
 ffmpeg.setFfprobePath('/usr/bin/ffprobe');
 
-const videoTocut="doraemon"
+const videoTocut="bheem"
 
 
 const inputVideo = `postAssets/input/${videoTocut}.mp4`; // Input video file
@@ -13,9 +13,9 @@ const outputDir = `./postAssets/${videoTocut}`; // Directory to store the output
 
 
 const beepAudio = 'postAssets/input/beep.mp3'; // Beep audio file to add
-const startVideoNumber = 9; // Start numbering from this video number
+const startVideoNumber = 12; // Start numbering from this video number
 const videoDuration = 30; // Duration of each video segment in seconds
-const videoQuantity = 4; // Number of video segments to crop
+const videoQuantity = 2; // Number of video segments to crop
 const targetWidth = 1080; // Desired width for Instagram Reel (9:16 aspect ratio)
 const targetHeight = 1920; // Desired height for Instagram Reel
 let episode = 1;
