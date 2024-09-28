@@ -7,6 +7,7 @@ require('dotenv').config();  // Load environment variables
 const { cropVideo } = require('./Helpers/VideoProcessing');  // Import the cropVideo function
 const { startUploadSession } = require('./Helpers/upload');
 const config = require('./config');
+const port = process.env.PORT || 4000;
 
 // Ensure the output directory exists
 if (!fs.existsSync(config.outputDir)) {
@@ -59,7 +60,6 @@ app.get('/', (req, res) => {
 });
 
 // Start the Express server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
