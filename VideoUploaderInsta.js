@@ -8,6 +8,7 @@ const { cropVideo } = require('./Helpers/VideoProcessing');  // Import the cropV
 const { startUploadSession } = require('./Helpers/upload');
 const config = require('./config');
 const port = process.env.PORT || 4000;
+const path = require('path');
 
 // Ensure the output directory exists
 if (!fs.existsSync(config.outputDir)) {
@@ -58,6 +59,8 @@ const app = express();
 app.get('/', (req, res) => {
   res.send('Server is running and cron jobs are scheduled.');
 });
+
+app.use('/media', express.static(path.join(__dirname, 'postAssets')));
 
 // Start the Express server
 app.listen(port, () => {

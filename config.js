@@ -10,7 +10,7 @@ const config = {
   videoDuration: 30,
   videoQuantity: 1,
   videoTocut:videoName,
-  folderName: `postAssets/${videoName}`,
+  folderName: `${videoName}`,
   accessToken: process.env.chota_bheem_btc,
   ngrokServer: process.env.NGROK_SERVER,
   location: "New York",

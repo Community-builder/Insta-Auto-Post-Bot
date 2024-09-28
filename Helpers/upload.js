@@ -82,31 +82,38 @@ const getFilePath = (folderName, mediaName, mediaType) => {
   const extension = mediaType === 'VIDEO' ? '.mp4' : '.png';
   return path.join(__dirname, `../${folderName}/${mediaName}${extension}`);
 };
+const getFileUrl = (mediaName,folderName, mediaType, serverUrl) => {
+  const extension = mediaType === 'VIDEO' ? '.mp4' : '.png'; // Set the appropriate extension
+  return `${serverUrl}/media/${folderName}/${mediaName}${extension}`; // Generate the URL to serve the media
+};
 
 // Upload session handler
 const startUploadSession = async (accessToken, folderName, mediaName, mediaType, caption = '',hashtags, coverUrl = '', thumbOffset = '', locationId = '',ngrokServer) => {
   try {
 
-    const filePath = getFilePath(folderName, mediaName, mediaType);
-    const extension = mediaType === 'VIDEO' ? '.mp4' : '.png';
-    console.log(filePath);
+    // const filePath = getFilePath(folderName, mediaName, mediaType);
+    // const extension = mediaType === 'VIDEO' ? '.mp4' : '.png';
+    // console.log(filePath);
     
     // Step 1: Upload media to IPFS
-    const fileStream = fs.createReadStream(filePath);
-    const ipfsResponse = await uploadFileToIPFS(fileStream);
+    // const fileStream = fs.createReadStream(filePath);
+    // const ipfsResponse = await uploadFileToIPFS(fileStream);
 
 
-    console.log(ipfsResponse);
+    // console.log(ipfsResponse);
 
-    if (!ipfsResponse.success) {
-      throw new Error(`Failed to upload media to IPFS: ${ipfsResponse.pinataURL}`);
-    }
+    // if (!ipfsResponse.success) {
+    //   throw new Error(`Failed to upload media to IPFS: ${ipfsResponse.pinataURL}`);
+    // }
     
-    const cid=ipfsResponse.pinataURL
+    // const cid=ipfsResponse.pinataURL
 
-    const cidUrl = `https://ipfs.io/${cid}`;
+    // const cidUrl = `https://ipfs.io/${cid}`;
    
-    const mediaUrl = filePath
+    // const mediaUrl = filePath
+    const serverUrl=process.env.CURRENT_SERVER_URL
+    const mediaUrl = getFileUrl(mediaName,folderName, mediaType, serverUrl);
+
 
     console.log("mediaUrl",mediaUrl);
     
