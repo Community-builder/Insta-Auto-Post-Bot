@@ -49,8 +49,8 @@ async function cropVideo(inputVideo, outputDir, beepAudio, VideoNumber, videoDur
 function createSegment(i, startTime, durationInSeconds, inputVideo, outputDir, beepAudio, VideoNumber, videoDuration, episode) {
   const segmentStartTime = startTime + i * videoDuration;
   const segmentEndTime = Math.min(segmentStartTime + videoDuration, durationInSeconds);
-  const outputFilename = path.join(outputDir, `${VideoNumber + i}.mp4`);
-  const previousFilename = path.join(outputDir, `${VideoNumber + i - 1}.mp4`);
+  const outputFilename = path.join(outputDir, `${VideoNumber}.mp4`);
+  const previousFilename = path.join(outputDir, `${VideoNumber - 1}.mp4`);
 
   const text = ` Ep ${episode} Part ${VideoNumber + i}`;
 
@@ -76,7 +76,7 @@ function createSegment(i, startTime, durationInSeconds, inputVideo, outputDir, b
         '[0:a][1:a]amix=inputs=2:duration=shortest'
       ])
       .on('end', () => {
-        console.log(`Segment ${VideoNumber + i} created: ${outputFilename}`);
+        console.log(`Segment ${VideoNumber } created: ${outputFilename}`);
 
         // Check if the previous video exists and delete it
         if (fs.existsSync(previousFilename)) {
