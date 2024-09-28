@@ -6,7 +6,7 @@ const hashtags= "#NFT #cryptoart #digitalart #kapilsharma #kapilsharma #kapilsha
 
 const config = {
   episode:  process.env.VIDEO_EPISODE_NUMBER,
-  mediaName: process.env.EPISODE_PART_NUMBER,
+  mediaName: 14,
   videoDuration: 30,
   videoQuantity: 1,
   videoTocut:videoName,
