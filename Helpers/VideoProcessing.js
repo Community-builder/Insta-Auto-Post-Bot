@@ -52,7 +52,7 @@ function createSegment(i, startTime, durationInSeconds, inputVideo, outputDir, b
   const outputFilename = path.join(outputDir, `${VideoNumber}.mp4`);
   const previousFilename = path.join(outputDir, `${VideoNumber - 1}.mp4`);
 
-  const text = ` Ep ${episode} Part ${VideoNumber + i}`;
+  const text = ` Ep ${episode} Part ${VideoNumber }`;
 
   return new Promise((resolve, reject) => {
     ffmpeg(inputVideo)
