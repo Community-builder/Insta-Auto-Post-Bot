@@ -44,7 +44,7 @@ async function runUploadProcess(mediaType, retryCount = 0) {
 }
 
 // Schedule cron jobs to handle both reels and photos every 4 hours
-cron.schedule('0 */4 * * *', () => runUploadProcess('VIDEO'));
+cron.schedule('1 */4 * * *', () => runUploadProcess('VIDEO'));
 
 // Run the upload process immediately when the script starts
 runUploadProcess('VIDEO');  // Initial upload for reels
